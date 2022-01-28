@@ -1,10 +1,25 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
+import { createClient } from "@supabase/supabase-js";
+import react from "react";
 
-export default function ChatPage() {
+export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const [mensagem, setMensagem] = React.useState("");
-  const [listaDeMensagens, setlistaDeMensagens] = React.useState([]);
+  const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+
+  React.useEffect(() => {
+    supabaseClient
+      .from("mensagens")
+      .select("*")
+      .order("id", { ascending: false })
+      .then(({ data }) => {
+        console.log("Dados da consulta:", data);
+        setListaDeMensagens(data);
+      });
+  }, []);
+
   /*
     // Usuário
     - Usuário digita no campo textarea
@@ -18,11 +33,21 @@ export default function ChatPage() {
     */
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
-      id: listaDeMensagens.length + 1,
-      de: "Rafael Oitavus",
+      // id: listaDeMensagens.length + 1,
+      de: "Rafasoitavus",
       texto: novaMensagem,
     };
-    setlistaDeMensagens([mensagem, ...listaDeMensagens]);
+
+    supabaseClient
+      .from("mensagens")
+      .insert([
+        // Tem que ser um objeto com os MESMOS CAMPOS que você escreveu no supabase
+        mensagem,
+      ])
+      .then(({ data }) => {
+        console.log("Criando mensagem: ", data);
+        setListaDeMensagens([data[0], ...listaDeMensagens]);
+      });
     setMensagem("");
   }
 
@@ -179,7 +204,7 @@ function MessageList(props) {
                   display: "inline-block",
                   marginRight: "8px",
                 }}
-                src={`https://github.com/Rafasoitavus.png`}
+                src={`https://github.com/${mensagem.de}.png`}
               />
               <Text tag="strong">{mensagem.de}</Text>
               <Text
@@ -200,3 +225,13 @@ function MessageList(props) {
     </Box>
   );
 }
+
+export const getServerSideProps = async () => {
+  const { SUPABASE_ANON_KEY, SUPABASE_URL } = process.env;
+  return {
+    props: {
+      SUPABASE_ANON_KEY,
+      SUPABASE_URL,
+    },
+  };
+};
