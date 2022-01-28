@@ -6,6 +6,7 @@ import react from "react";
 
 export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
   const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  console.log(SUPABASE_ANON_KEY, SUPABASE_URL);
   const [mensagem, setMensagem] = React.useState("");
   const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
