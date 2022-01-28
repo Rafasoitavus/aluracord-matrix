@@ -4,20 +4,12 @@ import appConfig from "../config.json";
 import { createClient } from "@supabase/supabase-js";
 import react from "react";
 
-export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
-  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+export default function ChatPage({ resultado }) {
   const [mensagem, setMensagem] = React.useState("");
   const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
   React.useEffect(() => {
-    supabaseClient
-      .from("mensagens")
-      .select("*")
-      .order("id", { ascending: false })
-      .then(({ data }) => {
-        console.log("Dados da consulta:", data);
-        setListaDeMensagens(data);
-      });
+    setListaDeMensagens(resultado);
   }, []);
 
   /*
@@ -228,10 +220,22 @@ function MessageList(props) {
 
 export const getServerSideProps = async () => {
   const { SUPABASE_ANON_KEY, SUPABASE_URL } = process.env;
+  //console.log(SUPABASE_ANON_KEY, SUPABASE_URL);
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let resultado = null;
+  await supabaseClient
+    .from("mensagens")
+    .select("*")
+    .order("id", { ascending: false })
+    .then(({ data }) => {
+      console.log("Dados da consulta:", data);
+      resultado = data;
+    });
+  //console.log(resultado);
+
   return {
     props: {
-      SUPABASE_ANON_KEY,
-      SUPABASE_URL,
+      resultado,
     },
   };
 };
