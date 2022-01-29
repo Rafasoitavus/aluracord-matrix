@@ -8,9 +8,10 @@ import { ButtonSendSticker } from "../src/components/ButtonsendSticker";
 
 export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
   const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const [mensagem, setMensagem] = React.useState("");
   const roteamento = useRouter();
   const usuarioLogado = roteamento.query.username;
+  const [mensagem, setMensagem] = React.useState("");
+
   console.log(usuarioLogado);
   const [listaDeMensagens, setListaDeMensagens] = React.useState([
     //{ texto: ":sticker: URL_da_imagem" },
@@ -20,7 +21,7 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
     //cliente
     return supabaseClient
       .from("mensagens")
-      .on("INSERT", ({ respostaLive }) => {
+      .on("INSERT", (respostaLive) => {
         adicionaMensagem(respostaLive.new);
       })
       .subscribe();
