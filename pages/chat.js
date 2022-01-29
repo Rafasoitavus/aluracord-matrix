@@ -11,11 +11,7 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
   const roteamento = useRouter();
   const usuarioLogado = roteamento.query.username;
   const [mensagem, setMensagem] = React.useState("");
-
-  console.log(usuarioLogado);
-  const [listaDeMensagens, setListaDeMensagens] = React.useState([
-    //{ texto: ":sticker: URL_da_imagem" },
-  ]);
+  const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
 
   function escutaMensagensEmTempoReal(adicionaMensagem) {
     //cliente
@@ -156,6 +152,7 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
             />
             <ButtonSendSticker
               onStickerClick={(sticker) => {
+                // console.log('[USANDO O COMPONENTE] Salva esse sticker no banco', sticker);
                 handleNovaMensagem(":sticker: " + sticker);
               }}
             />
@@ -246,7 +243,7 @@ function MessageList(props) {
               </Text>
             </Box>
             {mensagem.texto.startsWith(":sticker:") ? (
-              <image src={mensagem.texto.replace(":sticker:", "")} />
+              <Image src={mensagem.texto.replace(":sticker:", "")} />
             ) : (
               mensagem.texto
             )}
