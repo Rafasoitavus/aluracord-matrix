@@ -6,6 +6,15 @@ import { createClient } from "@supabase/supabase-js";
 import react from "react";
 import { ButtonSendSticker } from "../src/components/ButtonsendSticker";
 
+function escutaMensagensEmTempoReal(adicionaMensagem) {
+  return supabaseClient
+    .from("mensagens")
+    .on("INSERT", ({ respostaLive }) => {
+      adicionaMensagem(respostaLive.new);
+    })
+    .subscribe();
+}
+
 export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
   const roteamento = useRouter();
   const usuarioLogado = roteamento.query.username;
@@ -25,6 +34,11 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
         console.log("Dados da consulta:", data);
         setListaDeMensagens(data);
       });
+    escutaMensagensEmTempoReal((novaMensagem) => {
+      setListaDeMensagens((valorAtualDaLista) => {
+        return [novaMensagem, ...valorAtualDaLista];
+      });
+    });
   }, []);
 
   /*
@@ -53,7 +67,6 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
       ])
       .then(({ data }) => {
         console.log("Criando mensagem: ", data);
-        setListaDeMensagens([data[0], ...listaDeMensagens]);
       });
     setMensagem("");
   }
