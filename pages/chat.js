@@ -17,6 +17,7 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
   ]);
 
   function escutaMensagensEmTempoReal(adicionaMensagem) {
+    //cliente
     return supabaseClient
       .from("mensagens")
       .on("INSERT", ({ respostaLive }) => {
