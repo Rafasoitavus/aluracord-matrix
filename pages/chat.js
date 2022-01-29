@@ -137,6 +137,7 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
                 color: appConfig.theme.colors.neutrals[200],
               }}
             />
+            <ButtonSendSticker />
           </Box>
         </Box>
       </Box>
