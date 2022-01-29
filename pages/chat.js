@@ -12,7 +12,9 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
   console.log(usuarioLogado);
   const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const [mensagem, setMensagem] = React.useState("");
-  const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+  const [listaDeMensagens, setListaDeMensagens] = React.useState([
+    //{ texto: ":sticker: URL_da_imagem" },
+  ]);
 
   React.useEffect(() => {
     supabaseClient
@@ -137,7 +139,11 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
                 color: appConfig.theme.colors.neutrals[200],
               }}
             />
-            <ButtonSendSticker />
+            <ButtonSendSticker
+              onStickerClick={(sticker) => {
+                handleNovaMensagem(":sticker: " + sticker);
+              }}
+            />
           </Box>
         </Box>
       </Box>
@@ -224,7 +230,11 @@ function MessageList(props) {
                 {new Date().toLocaleDateString()}
               </Text>
             </Box>
-            {mensagem.texto}
+            {mensagem.texto.startsWith(":sticker:") ? (
+              <image src={mensagem.texto.replace(":sticker:", "")} />
+            ) : (
+              mensagem.texto
+            )}
           </Text>
         );
       })}
