@@ -6,15 +6,6 @@ import { createClient } from "@supabase/supabase-js";
 import react from "react";
 import { ButtonSendSticker } from "../src/components/ButtonsendSticker";
 
-function escutaMensagensEmTempoReal(adicionaMensagem) {
-  return supabaseClient
-    .from("mensagens")
-    .on("INSERT", ({ respostaLive }) => {
-      adicionaMensagem(respostaLive.new);
-    })
-    .subscribe();
-}
-
 export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
   const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const [mensagem, setMensagem] = React.useState("");
@@ -24,6 +15,15 @@ export default function ChatPage({ SUPABASE_ANON_KEY, SUPABASE_URL }) {
   const [listaDeMensagens, setListaDeMensagens] = React.useState([
     //{ texto: ":sticker: URL_da_imagem" },
   ]);
+
+  function escutaMensagensEmTempoReal(adicionaMensagem) {
+    return supabaseClient
+      .from("mensagens")
+      .on("INSERT", ({ respostaLive }) => {
+        adicionaMensagem(respostaLive.new);
+      })
+      .subscribe();
+  }
 
   React.useEffect(() => {
     supabaseClient
